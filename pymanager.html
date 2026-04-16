@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PyManager 3.1 - IDE Python leve com IA nativa (Claude, GPT, Gemini, Groq, Ollama, LM Studio)">
+    <title>PyManager v3.1 | Documentação Visual do Ecossistema</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        :root { --cyan: #00f2ff; --purple: #7000ff; --bg: #03040a; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: white; overflow-x: hidden; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        .glass-panel { 
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.8);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, var(--cyan), var(--purple));
+            transition: width 0.4s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+        .nav-link:hover { color: var(--cyan); text-shadow: 0 0 12px var(--cyan); }
+
+        #canvas-stars { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.35; }
+
+        .gradient-text {
+            background: linear-gradient(to bottom right, #fff 30%, var(--cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .shimmer { position: relative; overflow: hidden; }
+        .shimmer::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 242, 255, 0.08), transparent);
+            transform: rotate(45deg); animation: shimmer 6s infinite;
+        }
+        @keyframes shimmer { 0% { transform: translate(-100%, -100%) rotate(45deg); } 100% { transform: translate(100%, 100%) rotate(45deg); } }
+
+        .gallery-img {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .group:hover .gallery-img {
+            transform: scale(1.08);
+            filter: brightness(1.15);
+        }
+
+        /* Preloader */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #03040a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="flex flex-col items-center">
+            <i data-lucide="rocket" class="w-12 h-12 text-cyan-400 animate-pulse"></i>
+            <span class="mt-4 text-cyan-400 text-sm tracking-[3px] font-bold">ENTRANDO NO HIPERESPAÇO...</span>
+        </div>
+    </div>
+
+    <canvas id="canvas-stars"></canvas>
+
+    <!-- NAVEGAÇÃO GALÁCTICA -->
+    <nav class="fixed w-full z-50 px-10 py-6 flex justify-between items-center glass-panel border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <i data-lucide="rocket" class="text-cyan-400 w-6"></i>
+            <span class="text-xl font-extrabold tracking-tighter uppercase">Py<span class="text-cyan-400">Manager</span> <span class="text-[10px] text-gray-500 ml-2 tracking-widest">v3.1.4</span></span>
+        </div>
+        
+        <div class="hidden lg:flex gap-8 text-[11px] font-bold tracking-[0.25em] text-gray-400">
+            <a href="#about" class="nav-link flex items-center gap-1.5"><i data-lucide="earth" class="w-4"></i> SOBRE</a>
+            <a href="#core" class="nav-link flex items-center gap-1.5"><i data-lucide="layers" class="w-4"></i> CORE</a>
+            <a href="#ai" class="nav-link flex items-center gap-1.5"><i data-lucide="brain" class="w-4"></i> INTELLIGENCE</a>
+            <a href="#engine" class="nav-link flex items-center gap-1.5"><i data-lucide="cpu" class="w-4"></i> ENGINE</a>
+            <a href="#system" class="nav-link flex items-center gap-1.5"><i data-lucide="database" class="w-4"></i> SYSTEM</a>
+        </div>
+        
+        <button onclick="window.location.reload()" class="bg-cyan-500 hover:bg-cyan-400 text-black text-[10px] font-black px-6 py-2 rounded shadow-lg shadow-cyan-500/30 transition flex items-center gap-2">
+            <i data-lucide="zap" class="w-3"></i>
+            ENTER HYPERSPACE
+        </button>
+    </nav>
+
+    <!-- HERO -->
+    <section class="min-h-screen flex flex-col justify-center items-center px-6 relative">
+        <div class="text-center z-10" id="hero-content">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/5 mb-8">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span class="text-[9px] font-black tracking-widest text-cyan-400 uppercase">Built with Tkinter Graphics</span>
+            </div>
+            <h1 class="text-7xl md:text-9xl font-black mb-10 tracking-tighter gradient-text leading-none">
+                DEVELOP <br>FASTER.
+            </h1>
+            <p class="max-w-xl mx-auto text-gray-500 text-lg leading-relaxed mb-12">
+                IDE Python leve com IA nativa. Escreva, teste e versione sem sair do editor.
+            </p>
+            <div class="flex gap-4 justify-center">
+                <button class="px-12 py-5 bg-white text-black font-black text-xs tracking-widest hover:bg-cyan-400 transition">INITIALIZE SYSTEM</button>
+                <button class="px-12 py-5 glass-panel font-black text-xs tracking-widest hover:bg-white/5 transition">VIEW SOURCE</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section id="about" class="py-20 px-10 max-w-7xl mx-auto border-t border-white/5">
+        <div class="reveal">
+            <h2 class="text-4xl font-black mb-8 tracking-tighter uppercase">O que é o PyManager 3.1</h2>
+            <div class="glass-panel p-8 text-gray-400 leading-relaxed text-sm">
+                <p class="mb-6">PyManager é um IDE completo para Python desenvolvido em Tkinter com integração nativa de Inteligência Artificial.</p>
+                <p class="mb-6">Alternativa leve e rápida ao PyCharm / VS Code. Totalmente em português brasileiro, com ~6.200 linhas de código em um único arquivo principal + biblioteca interna.</p>
+                <p>Suporta 6 provedores de IA (Claude, GPT, Gemini, Groq, Ollama e LM Studio) e roda offline com modelos locais.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE -->
+    <section id="core" class="py-32 px-10 max-w-7xl mx-auto border-t border-white/5">
+        <div class="grid lg:grid-cols-2 gap-16 items-start">
+            <div class="reveal">
+                <h2 class="text-4xl font-black mb-12 italic tracking-tighter uppercase">1. Editor &amp; Workflow</h2>
+                <div class="grid gap-4 text-sm">
+                    <div class="glass-panel p-6 shimmer hover:scale-[1.02] transition-all duration-300">Multi-arquivo com abas • Destaque de sintaxe (20+ linguagens) • Auto-indentação • Buscar/substituir • Snippets • Mini-mapa</div>
+                    <div class="glass-panel p-6 shimmer hover:scale-[1.02] transition-all duration-300">Execução F5/F6 • Terminal integrado com cores ANSI • Suporte Flask/FastAPI</div>
+                    <div class="glass-panel p-6 shimmer hover:scale-[1.02] transition-all duration-300">Explorador lateral • Histórico de arquivos • Backup automático • Versionamento com diff</div>
+                </div>
+            </div>
+
+            <div class="reveal">
+                <div class="glass-panel p-3 rounded-3xl bg-white/5 overflow-hidden">
+                    <div id="gallery-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="group relative overflow-hidden rounded-2xl"><img src="captura-203551.png" class="gallery-img w-full" loading="lazy" decoding="async" width="640" height="360" alt="Editor"><div class="absolute bottom-2 left-2 bg-black/70 text-[10px] text-cyan-400 px-2 py-1 rounded-lg mono">Editor + Terminal</div></div>
+                        <div class="group relative overflow-hidden rounded-2xl"><img src="captura-203552.png" class="gallery-img w-full" loading="lazy" decoding="async" width="640" height="360" alt="Player"><div class="absolute bottom-2 left-2 bg-black/70 text-[10px] text-cyan-400 px-2 py-1 rounded-lg mono">Player de Mídia</div></div>
+                        <div class="group relative overflow-hidden rounded-2xl"><img src="captura-203553.png" class="gallery-img w-full" loading="lazy" decoding="async" width="640" height="360" alt="Melhorar IA"><div class="absolute bottom-2 left-2 bg-black/70 text-[10px] text-cyan-400 px-2 py-1 rounded-lg mono">IA Melhorar (F8)</div></div>
+                        <div class="group relative overflow-hidden rounded-2xl"><img src="captura-203554.png" class="gallery-img w-full" loading="lazy" decoding="async" width="640" height="360" alt="Config IA"><div class="absolute bottom-2 left-2 bg-black/70 text-[10px] text-cyan-400 px-2 py-1 rounded-lg mono">Configurações IA</div></div>
+                        <div class="group relative overflow-hidden rounded-2xl"><img src="captura-203555.png" class="gallery-img w-full" loading="lazy" decoding="async" width="640" height="360" alt="Gerar"><div class="absolute bottom-2 left-2 bg-black/70 text-[10px] text-cyan-400 px-2 py-1 rounded-lg mono">Gerar Código (F11)</div></div>
+                        <div class="group relative overflow-hidden rounded-2xl"><img src="captura-203556.png" class="gallery-img w-full" loading="lazy" decoding="async" width="640" height="360" alt="Melhorar"><div class="absolute bottom-2 left-2 bg-black/70 text-[10px] text-cyan-400 px-2 py-1 rounded-lg mono">Melhorar com IA</div></div>
+                        <div class="group relative overflow-hidden rounded-2xl"><img src="captura-203557.png" class="gallery-img w-full" loading="lazy" decoding="async" width="640" height="360" alt="Corrigir"><div class="absolute bottom-2 left-2 bg-black/70 text-[10px] text-cyan-400 px-2 py-1 rounded-lg mono">Corrigir Erro (F8)</div></div>
+                        <div class="group relative overflow-hidden rounded-2xl"><img src="captura-203558.png" class="gallery-img w-full" loading="lazy" decoding="async" width="640" height="360" alt="Histórico"><div class="absolute bottom-2 left-2 bg-black/70 text-[10px] text-cyan-400 px-2 py-1 rounded-lg mono">Histórico &amp; Backup</div></div>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-between items-center px-4 font-mono text-[10px] text-gray-500">
+                    <span>EXPLORADOR LATERAL</span>
+                    <span class="text-cyan-400">SNIPPETS ATIVOS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI -->
+    <section id="ai" class="py-32 px-10 bg-white/[0.01]">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                <div class="reveal">
+                    <h2 class="text-5xl font-black tracking-tighter uppercase mb-4">2. Native Intelligence</h2>
+                    <p class="text-gray-500">6 provedores • Streaming token-a-token • Fallback automático • IA local (Ollama/LM Studio)</p>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 mb-12 overflow-x-auto">
+                <table class="w-full text-xs mono text-gray-400">
+                    <thead><tr class="border-b border-white/10"><th class="text-left py-3">Provedor</th><th class="text-left py-3">Modelos</th><th class="text-center py-3">Gratuito?</th><th class="text-center py-3">Local?</th></tr></thead>
+                    <tbody>
+                        <tr class="border-b border-white/10"><td class="py-3">Anthropic (Claude)</td><td>claude-sonnet-4, haiku-4, opus-4</td><td class="text-center">Não</td><td class="text-center">Não</td></tr>
+                        <tr class="border-b border-white/10"><td class="py-3">OpenAI (GPT)</td><td>gpt-4o, gpt-4o-mini, gpt-4-turbo</td><td class="text-center">Não</td><td class="text-center">Não</td></tr>
+                        <tr class="border-b border-white/10"><td class="py-3">Google Gemini</td><td>gemini-2.0-flash, 1.5-flash, 2.5-pro</td><td class="text-center">Sim</td><td class="text-center">Não</td></tr>
+                        <tr class="border-b border-white/10"><td class="py-3">Groq</td><td>llama-3.3-70b, gemma2-9b...</td><td class="text-center">Sim</td><td class="text-center">Não</td></tr>
+                        <tr class="border-b border-white/10"><td class="py-3">Ollama</td><td>llama3.2, codellama, phi3...</td><td class="text-center">Sim</td><td class="text-center">Sim</td></tr>
+                        <tr><td class="py-3">LM Studio</td><td>Qualquer modelo instalado</td><td class="text-center">Sim</td><td class="text-center">Sim</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="glass-panel p-8 ai-border reveal"><span class="mono text-cyan-400 text-xs font-bold">[F8]</span><h4 class="text-xl font-bold mt-4 mb-4 uppercase">IA Corrigir</h4><p class="text-gray-500 text-xs">Corrige erros automaticamente com diff</p></div>
+                <div class="glass-panel p-8 ai-border reveal"><span class="mono text-cyan-400 text-xs font-bold">[F9]</span><h4 class="text-xl font-bold mt-4 mb-4 uppercase">IA Analisar</h4><p class="text-gray-500 text-xs">Análise de performance e boas práticas</p></div>
+                <div class="glass-panel p-8 ai-border reveal"><span class="mono text-cyan-400 text-xs font-bold">[F10]</span><h4 class="text-xl font-bold mt-4 mb-4 uppercase">Chat Nativo</h4><p class="text-gray-500 text-xs">Chat completo com histórico</p></div>
+                <div class="glass-panel p-8 ai-border reveal"><span class="mono text-cyan-400 text-xs font-bold">[F11]</span><h4 class="text-xl font-bold mt-4 mb-4 uppercase">IA Gerar</h4><p class="text-gray-500 text-xs">Gera código a partir de texto natural</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ENGINE -->
+    <section id="engine" class="py-32 px-10 max-w-7xl mx-auto">
+        <div class="grid lg:grid-cols-2 gap-20 items-center">
+            <div class="reveal">
+                <div class="mono text-xs text-purple-400 mb-4 tracking-widest uppercase">Engine Runtime</div>
+                <h2 class="text-4xl font-black mb-8 italic tracking-tighter uppercase">3. Execução &amp; Terminal</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-6 p-4 glass-panel exec-border"><div class="mono font-bold text-xl">F5</div><p class="text-gray-400 text-xs font-semibold">Executar arquivo completo</p></div>
+                    <div class="flex items-center gap-6 p-4 glass-panel exec-border"><div class="mono font-bold text-xl">F6</div><p class="text-gray-400 text-xs font-semibold">Executar seleção</p></div>
+                </div>
+            </div>
+            <div class="glass-panel p-8 mono text-xs leading-relaxed reveal">
+                <div class="text-purple-400"># TERMINAL INTEGRADO</div>
+                <div class="text-green-500 mt-4 underline italic"># SUPORTE WEB: FLASK / FASTAPI</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SYSTEM -->
+    <section id="system" class="py-32 px-10 border-t border-white/5 bg-cyan-500/[0.01]">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-8">
+            <div class="glass-panel p-10 reveal">
+                <div class="flex items-center gap-4 mb-6"><div class="p-3 bg-cyan-500/10 rounded-xl text-cyan-400"><i data-lucide="clock"></i></div><h3 class="text-2xl font-black uppercase">Backup &amp; Diff</h3></div>
+                <p class="text-gray-500 text-sm">Versionamento automático • 50 versões • Diff visual • Restaurar com um clique</p>
+            </div>
+            <div class="glass-panel p-10 reveal">
+                <div class="flex items-center gap-4 mb-6"><div class="p-3 bg-purple-500/10 rounded-xl text-purple-400"><i data-lucide="package"></i></div><h3 class="text-2xl font-black uppercase">PIP Visual</h3></div>
+                <p class="text-gray-500 text-sm">Gerenciador gráfico de pacotes • Instalar/atualizar sem terminal</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-20 text-center border-t border-white/5">
+        <p class="text-[9px] text-gray-700 tracking-[0.8em] font-black uppercase mb-4">Autonomous Python Environment</p>
+        <p class="text-[9px] text-gray-500 tracking-widest uppercase">PyManager Project © 2026</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Preloader
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            setTimeout(() => preloader.style.display = 'none', 600);
+        });
+
+        // Stars
+        const canvas = document.getElementById('canvas-stars');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+        class Star { constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.s = Math.random()*1.8; this.v = Math.random()*0.25; } draw() { ctx.fillStyle = "white"; ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI*2); ctx.fill(); } update() { this.y -= this.v; if(this.y < 0) this.y = canvas.height; }}
+        const init = () => { stars = Array.from({length: 140}, () => new Star()); };
+        const loop = () => { ctx.clearRect(0,0,canvas.width,canvas.height); stars.forEach(s => { s.update(); s.draw(); }); requestAnimationFrame(loop); };
+        window.addEventListener('resize', resize);
+        resize(); init(); loop();
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Animations
+        gsap.from("#hero-content > *", { opacity: 0, y: 30, duration: 1.2, stagger: 0.15, ease: "power4.out" });
+        gsap.utils.toArray(".reveal").forEach((el, i) => {
+            gsap.from(el, { scrollTrigger: { trigger: el, start: "top 85%" }, opacity: 0, y: 40, duration: 1.1, ease: "power3.out", delay: i * 0.1 });
+        });
+        gsap.from("#gallery-grid > div", { scrollTrigger: "#gallery-grid", opacity: 0, scale: 0.92, y: 30, duration: 0.8, stagger: 0.08, ease: "back.out(1.4)" });
+    </script>
+</body>
+</html>
